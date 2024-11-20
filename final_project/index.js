@@ -11,10 +11,18 @@ app.use(express.json());
 app.use("/customer",session({secret:"fingerprint_customer",resave: true, saveUninitialized: true}))
 
 app.use("/customer/auth/*", function auth(req,res,next){
-//Write the authenication mechanism here
+    //Write the authenication mechanism here
+    if (req.session && req.session.isAuthenticated) {
+        console.log("Authenticated session:", req.session);
+        next(); // Proceed to the next middleware or route handler
+    } else {
+        console.log("Authentication failed. No session or invalid session.");
+        res.status(401).send("Unauthorized");
+    }
 });
+
  
-const PORT =5000;
+const PORT =3000;
 
 app.use("/customer", customer_routes);
 app.use("/", genl_routes);
